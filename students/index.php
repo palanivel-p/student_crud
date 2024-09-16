@@ -1,27 +1,52 @@
 <?php
 include("../includes/connection.php");
-// if ($_COOKIE['userId'] == '') {
-//   header('Location: http://schooloftechiestask.infinityfreeapp.com/');
-// }
+if ($_COOKIE['userId'] == '') {
+  header('Location: http://localhost/logic_crud/login/');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>logoc Crud</title>
+    <title>Logic Crud</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    .table td {
+        word-wrap: break-word;
+        word-break: break-all;
+        max-width: 150px; /* Set a maximum width for each cell */
+    }
 
+    .table-actions {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .table-actions button {
+        white-space: nowrap; /* Prevent buttons from wrapping */
+    }
+</style>
 </head>
 <body>
   <div class="container mt-5">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-          <h2>PHP LOGIC CRUD</h2>
-          <!-- Button trigger modal -->
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#studentModal" onclick="add()">
-              Add Student
-          </button>
-      </div>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>PHP LOGIC CRUD</h2>
+    
+    <div class="ms-auto d-flex gap-2"> <!-- gap-2 adds space between the buttons -->
+        <!-- Add Student Button -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#studentModal" onclick="add()">
+            Add Student
+        </button>
+        
+        <!-- Log Out Button -->
+        <a href="../login/?logout=1">
+            <button type="button" class="btn btn-danger">Log Out</button>
+        </a>
+    </div>
+</div>
+
 
       <!-- Modal -->
       <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel" aria-hidden="true">
@@ -61,39 +86,43 @@ include("../includes/connection.php");
           </div>
       </div>
 
-      <table class="table table-striped">
-          <thead>
-              <tr>
-                  <th class="text-center">S.No</th>
-                  <th class="text-center">Name</th>
-                  <th class="text-center">Mobile</th>
-                  <th class="text-center">Email</th>
-                  <th class="text-center">Address</th>
-                  <th class="text-center">Action</th>
-              </tr>
-          </thead>
-          <tbody>
-              <?php 
-              $sql = "SELECT * FROM `student`";
-              $result =  mysqli_query($conn, $sql);
-              $i = 1;
-              while($row = mysqli_fetch_assoc($result)){
-              ?>
-              <tr>
-                  <td class="text-center"><?php echo $i++; ?></td>
-                  <td class="text-center"><?php echo $row['student_name']?></td>
-                  <td class="text-center"><?php echo $row['student_mobile']?></td>
-                  <td class="text-center"><?php echo $row['student_email']?></td>
-                  <td class="text-center"><?php echo $row['address']?></td>
-                  <td class="text-center">
-                      <button type="button" class="btn btn-warning" onclick="view('<?php echo $row['student_id']?>')">View</button>
-                      <button type="button" class="btn btn-success" onclick="edit('<?php echo $row['student_id']?>')">Edit</button>
-                      <button type="button" class="btn btn-danger" onclick="delete_student('<?php echo $row['student_id']?>')">Delete</button>
-                  </td>
-              </tr>
-              <?php } ?>
-          </tbody>
-      </table>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="text-center">S.No</th>
+                <th class="text-center">Name</th>
+                <th class="text-center">Mobile</th>
+                <th class="text-center">Email</th>
+                <th class="text-center">Address</th>
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php 
+            $sql = "SELECT * FROM `student`";
+            $result =  mysqli_query($conn, $sql);
+            $i = 1;
+            while($row = mysqli_fetch_assoc($result)){
+            ?>
+            <tr>
+                <td class="text-center"><?php echo $i++; ?></td>
+                <td class="text-center"><?php echo $row['student_name']?></td>
+                <td class="text-center"><?php echo $row['student_mobile']?></td>
+                <td class="text-center"><?php echo $row['student_email']?></td>
+                <td class="text-center"><?php echo $row['address']?></td>
+                <td class="text-center">
+                    <div class="table-actions">
+                        <button type="button" class="btn btn-warning" onclick="view('<?php echo $row['student_id']?>')">View</button>
+                        <button type="button" class="btn btn-success" onclick="edit('<?php echo $row['student_id']?>')">Edit</button>
+                        <button type="button" class="btn btn-danger" onclick="delete_student('<?php echo $row['student_id']?>')">Delete</button>
+                    </div>
+                </td>
+            </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+
   </div>
 
 

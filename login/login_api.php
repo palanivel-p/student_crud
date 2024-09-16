@@ -1,28 +1,45 @@
 <?php
-Include("http://localhost/logic_crud/includes/connection.php");
-session_start();
+include("../includes/connection.php");
 
-header('Content-Type: application/json');
+if (isset($_POST['email_field']) && isset($_POST['pwd_field'])) {
 
-if (isset($_POST['email']) && isset($_POST['password'])) {
-    $email = clean($_POST['email']);
-    $password = clean($_POST['password']);
 
-    $sql = "SELECT * FROM gbuser WHERE email='$email'";
-    $result = mysqli_query($conn, $sql);
+    $email_field = $_POST['email_field'];
+    $pwd_field = $_POST['pwd_field'];
 
-    if (mysqli_num_rows($result) > 0) {
-        $user = mysqli_fetch_assoc($result);
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            echo json_encode(["status" => "success", "msg" => "Login successful!"]);
-        } else {
-            echo json_encode(["status" => "error", "msg" => "Invalid password!"]);
-        }
+
+    $sqlValidateEmail = "SELECT * FROM `user` WHERE email='$email_field' AND password='$pwd_field'";
+
+    $resValidateEmail = mysqli_query($conn, $sqlValidateEmail);
+    if (mysqli_num_rows($resValidateEmail) > 0) {
+
+
+
+        $row = mysqli_fetch_assoc($resValidateEmail);
+
+
+        setcookie("userId", $row['id'], time() + (86400 * 30), "/");
+
+        $json_array['status'] = "success";
+        $json_array['msg'] = "Welcome  " . $row['user_name'] . "!!!";
+        $json_response = json_encode($json_array);
+        echo $json_response;
+
+        //log
+
+
+
     } else {
-        echo json_encode(["status" => "error", "msg" => "No user found with this email!"]);
+        //Parameters missing
+        $json_array['status'] = "failure";
+        $json_array['msg'] = "Email or Password is Incorrect !!!";
+        $json_response = json_encode($json_array);
+        echo $json_response;
     }
 } else {
-    echo json_encode(["status" => "error", "msg" => "Invalid request."]);
+    //Parameters missing
+    $json_array['status'] = "failure";
+    $json_array['msg'] = "Please try after Sometime !!!";
+    $json_response = json_encode($json_array);
+    echo $json_response;
 }
-?>

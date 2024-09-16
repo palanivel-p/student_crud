@@ -30,21 +30,23 @@
 <?php
 Include("../includes/connection.php");
 
-if(isset($_POST['email']) && isset($_POST['password'])) {
+if(isset($_POST['email_field']) && isset($_POST['pwd_field'])&& isset($_POST['username'])) {
 
-    $email = clean($_POST['email']);
-    $password = clean($_POST['password']);
+    $user_name = clean($_POST['username']);
+    $email = clean($_POST['email_field']);
+    $password = clean($_POST['pwd_field']);
 
 //    $salt = 'GB#$20deeSp%22';
 //      $pw_hash = sha1($salt.$password);
-    $remember = 0;
+    // $remember = 0;
 
-    $sqlValidate = "SELECT * FROM `user` WHERE user_name='$email' AND password='$password'";
+    $sqlValidate = "SELECT * FROM `user` WHERE email='$email' AND password='$password'";
     $resValidate = mysqli_query($conn, $sqlValidate);
     if (mysqli_num_rows($resValidate) == 0) {
 
-        $sql = "INSERT INTO user (user_name, password) VALUES ('$email', '$password')";
+        $sql = "INSERT INTO user (`user_name`, `email`,`password`) VALUES ('$user_name','$email', '$password')";
         mysqli_query($conn, $sql);
+
         $json_array['status'] = "success";
         //$json_array['msg'] = "success";
         $json_response = json_encode($json_array);
